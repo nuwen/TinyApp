@@ -2,22 +2,52 @@
 <html lang="en">
 <head>
   <title>TinyApp</title>
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <style>
+  .cellpadding {
+   padding-left: 5px;
+   padding-right: 5px;
+   padding-top: 5px;
+   padding-bottom: 5px;
+}
+
+  </style>
+
 </head>
 <body>
+  <% include partials/_navbar %>
+
+
+  <div class="jumbotron text-center">
   <% include partials/_header %>
+  </div>
 
-
-    <% for(let shortURL in urls) { %>
-    <p><%= `${shortURL} ----> ${urls[shortURL]} \n `%>
-      <a href="/urls/<%= shortURL %>">Edit</a>
-    <form method="POST" action="/urls/<%= shortURL %>/delete">
-      <input type="submit" value="Delete">
+  <div class="row">
+  <table>
+  <% for(let shortURL in urls) { %>
+  <tr>
+    <td class="cellpadding">
+      <%= `${shortURL} ----> ${urls[shortURL]} \n `%>
+    </td>
+    <td class="cellpadding">
+      <form action="/urls/<%= shortURL %>">
+        <input type="submit" value="Update"/>
+      </form>
+    </td>
+    <td class="cellpadding">
+      <form method="POST" action="/urls/<%= shortURL %>/delete">
+      <button>Delete</button>
     </form>
-
-    </p>
-    <br>
-    <% } %>
-
+    </td>
+  </tr>
+  <% } %>
+  </table>
+  </div
 
 </body>
 </html>

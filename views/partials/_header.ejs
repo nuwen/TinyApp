@@ -2,4 +2,34 @@
 <head>
   <title>this is the _header.ejs</title>
 </head>
-</html>
+
+<style>
+  body {
+      font-family:sans-serif;
+      margin: 0 auto;
+      padding-top: 100px;
+      padding-bottom: 20px;
+      background-color: #eeeeee;
+
+  }
+  table {
+      margin: auto;
+  }
+
+  .jumbotron {
+    background-color: #f4511e; /* Orange */
+    color: #ffffff;
+}
+</style>
+
+<body>
+
+      <form method="POST" action="/login" class="form-inline">
+        <div class="input-group">
+        <label for="username">Enter Username: </label>
+        <input type="text" name="username" style="width: 300px">
+        <input type="submit" value="Sign In" class="btn btn-danger">
+        </div>
+      </form>
+</body>
+ </html>
