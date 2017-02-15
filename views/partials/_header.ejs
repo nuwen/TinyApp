@@ -3,11 +3,29 @@
   <title>this is the _header.ejs</title>
 </head>
 
+<style>
+  body {
+      font-family:sans-serif;
+      margin: 0 auto;
+      padding-top: 100px;
+      padding-bottom: 20px;
+      back;
+  }
+  table {
+      margin: auto;
+  }
+</style>
+
 <body>
-  <form method="POST" action="/login">
-    <label for="username">Enter Username: </label>
-    <input type="text" name="username" style="width: 300px">
-    <input type="submit" value="Sign In">
-  </form>
+
+  <center>
+    <div>
+      <form method="POST" action="/login">
+        <label for="username">Enter Username: </label>
+        <input type="text" name="username" style="width: 300px">
+        <input type="submit" value="Sign In">
+      </form>
+  </div>
+</center>
 </body>
 </html>

@@ -9,6 +9,8 @@ var PORT = process.env.PORT || 8080;
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static(__dirname + '/public'));
+
 app.use(cookieParser());
 
 app.set('view engine', 'ejs');
@@ -18,6 +20,7 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+// ROOT
 app.get("/", (req, res) => {
   res.end('Hello');
 });
@@ -38,13 +41,14 @@ app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
+
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
 app.post("/urls/", (req, res) => {
-  let updateURL = req.body;
-  let shortURL = (req.headers.referer.slice(27));
+  const updateURL = req.body;
+  const shortURL = (req.headers.referer.slice(27));
   console.log(req.body);  // debug statement to see POST parameters
   res.send(updateURL['longURL']);         // Respond with 'Ok' (we will replace this)
   urlDatabase[shortURL] = updateURL.longURL;
