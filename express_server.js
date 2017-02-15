@@ -23,6 +23,8 @@ var urlDatabase = {
 // ROOT
 app.get("/", (req, res) => {
   res.end('Hello');
+  console.log(req.cookies["username"]); // debugging line removel8rs
+
 });
 
 app.listen(PORT, () => {
@@ -38,11 +40,18 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
   res.render("urls_index", templateVars);
+
 });
 
 app.get("/urls/new", (req, res) => {
+  let templateVars = {
+    username: req.cookies["username"]
+  };
   res.render("urls_new");
 });
 
@@ -55,15 +64,25 @@ app.post("/urls/", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log(req.body);
-  console.log(res.cookie);
+  var usernameINPUT = req.body['username'];
+  res.cookie('username', usernameINPUT);
   // res.send(req.body['username']);
+  res.redirect('/');
+});
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
+  console.log('deleted');
   res.redirect('/');
 });
 
 app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
-  let templateVars = { shortURL, longURL: urlDatabase[shortURL] };
+  let templateVars = {
+    shortURL,
+    longURL: urlDatabase[shortURL],
+    username: req.cookies["username"]
+  };
   res.render("urls_show", templateVars);
 });
 

@@ -18,18 +18,32 @@
 
   .jumbotron {
     background-color: #f4511e; /* Orange */
-    color: #ffffff;
+    color: #000000;
 }
 </style>
 
 <body>
 
-      <form method="POST" action="/login" class="form-inline">
+<center>
+
+        <% if(username) { %>
+        <form method="POST" action="/logout"class="form-inline">
         <div class="input-group">
-        <label for="username">Enter Username: </label>
-        <input type="text" name="username" style="width: 300px">
-        <input type="submit" value="Sign In" class="btn btn-danger">
+            <label for="logout"><%=`${username} `%> </label>
+            <input type="submit" value="Logout">
         </div>
-      </form>
+        </form>
+        <% } else { %>
+        <div class="input-group">
+        <form method="POST" action="/login" class="form-inline">
+          <label for="username">Enter Username: </label>
+          <input type="text" name="username" style="width: 300px">
+          <input type="submit" value="Sign In" class="btn btn-danger">
+        </div>
+        </form>
+        <% } %>
+
+
+
 </body>
  </html>
