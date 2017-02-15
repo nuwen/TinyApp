@@ -2,11 +2,14 @@
 // need http
 
 var express = require('express');
+var cookieParser = require('cookie-parser');
 var app = express();
+
 var PORT = process.env.PORT || 8080;
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 app.set('view engine', 'ejs');
 
@@ -47,10 +50,16 @@ app.post("/urls/", (req, res) => {
   urlDatabase[shortURL] = updateURL.longURL;
 });
 
+app.post("/login", (req, res) => {
+  console.log(req.body);
+  console.log(res.cookie);
+  // res.send(req.body['username']);
+  res.redirect('/');
+});
 
 app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
-  let templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL] };
+  let templateVars = { shortURL, longURL: urlDatabase[shortURL] };
   res.render("urls_show", templateVars);
 });
 

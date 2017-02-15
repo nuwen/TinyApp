@@ -10,7 +10,7 @@
     <% for(let shortURL in urls) { %>
     <p><%= `${shortURL} ----> ${urls[shortURL]} \n `%>
       <a href="/urls/<%= shortURL %>">Edit</a>
-    <form method="POST" action="/urls/<%= shortURL %>/delete">
+      <form method="POST" action="/urls/<%= shortURL %>/delete">
       <input type="submit" value="Delete">
     </form>
 
