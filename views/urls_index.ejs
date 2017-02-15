@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link href="style.css" rel="stylesheet" type="text/css">
   <title>TinyApp</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<!--
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
   <style>
-    body {
-        font-family:sans-serif;
-        margin: 0 auto;
-        padding-top: 20px;
-        padding-bottom: 20px;
-        background-color: inherit;;
-    }
-    table {
-        margin: auto;
-    }
-  </style> -->
+  .cellpadding {
+   padding-left: 5px;
+   padding-right: 5px;
+   padding-top: 5px;
+   padding-bottom: 5px;
+}
+
+  </style>
 
 </head>
 <body>
-  <div class="jumbotron" style="width: 800px; margin: auto">
+  <% include partials/_navbar %>
+
+
+  <div class="jumbotron text-center">
   <% include partials/_header %>
   </div>
 
@@ -28,15 +31,15 @@
   <table>
   <% for(let shortURL in urls) { %>
   <tr>
-    <td>
+    <td class="cellpadding">
       <%= `${shortURL} ----> ${urls[shortURL]} \n `%>
     </td>
-    <td>
+    <td class="cellpadding">
       <form action="/urls/<%= shortURL %>">
         <input type="submit" value="Update"/>
       </form>
     </td>
-    <td>
+    <td class="cellpadding">
       <form method="POST" action="/urls/<%= shortURL %>/delete">
       <button>Delete</button>
     </form>
