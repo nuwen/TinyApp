@@ -96,7 +96,7 @@ app.post("/urls/", (req, res) => { //still need to generate shorturl wit user lo
   urlDatabase[shortURL] = updateURL.longURL;
 });
 
-/////////////////////////////////// LOGIN \\\\\\\\\\\\\\\\\\\\\\\\
+/////////////////////////////////// LOGIN \\\\\\\\\\\\\\\\\\\\\\\\ TASK 6
 
 app.get("/login", (req, res) => {
   console.log("login page");
@@ -105,14 +105,19 @@ app.get("/login", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  var usernameINPUT = req.body['username'];
-  res.cookie('username', usernameINPUT);
+  var userMail = req.body['user_id'];
+  res.cookie('user_id', userMail);
   res.cookie('session', '1', {expires: 0});
-  if(req.body['username']) {
-    res.redirect('/urls');
-  } else {
-    //html with input fields for email and password
+  if(!req.body['user_id']) {
+    res.send('invalid username');
   }
+  if(emailExists(userMail)){
+    res.cookie('user_id', emailExists(userMail));
+    res.redirect('/');
+  } else {
+    res.status(403).send('Email does not exist!');
+  }
+
 });
 /////////////////////////////////// REGISTER \\\\\\\\\\\\\\\\\\\\\\\\
 app.get("/register", (req, res) => {
@@ -148,8 +153,8 @@ app.post("/register", (req, res) => {
 
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('username');
-  console.log('deleted');
+  res.clearCookie('user_id');
+  console.log('loggedout');
   res.redirect('/urls');
 });
 
@@ -204,7 +209,7 @@ function generateRandomString() {
 function emailExists(emailReg){
   for(userid in users) {
     if(users[userid]['email'] === emailReg){
-      return true;
+      return userid;
     }
   }
   return false;
