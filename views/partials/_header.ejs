@@ -27,10 +27,10 @@
 
 <center>
 
-        <% if(username) { %>
+        <% if(user_id) { %>
         <form method="POST" action="/logout"class="form-inline">
         <div class="input-group">
-            <label for="logout" style="color: #FFFFFF"><%=`${username} `%> </label>
+            <label for="logout" style="color: #000000"><%=`${users[user_id]['email']} `%> </label>
             <input type="submit" value="Logout">
         </div>
         </form>

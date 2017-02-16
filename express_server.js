@@ -13,13 +13,20 @@ app.use(express.static(__dirname + '/public'));
 
 app.use(cookieParser());
 
+
+
+
 app.use(function(req, res, next){
-  res.locals.username = req.cookies['username'];
+  res.locals.user_id = req.cookies['user_id'];
+  res.locals.users = users;
+  res.locals.user_email = req.body['user_id'];
 
   next();
 });
 
 app.set('view engine', 'ejs');
+
+
 
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -70,7 +77,7 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  if(false) { // change back to "!req.cookies["username"]"
+  if(false) { // change back to "!req.cookies["user_id"]"
     res.status(401).send('Unauthorized');
   } else {
     let templateVars = {
@@ -105,21 +112,33 @@ app.get("/login", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-  var userMail = req.body['user_id'];
-  res.cookie('user_id', userMail);
-  res.cookie('session', '1', {expires: 0});
+
+  res.cookie('user_id', req.body['user_id']);
+
   if(!req.body['user_id']) {
-    res.send('invalid username');
+    res.send('invalid user id');
   }
-  if(emailExists(userMail)){
-    res.cookie('user_id', emailExists(userMail));
-    res.redirect('/');
-  } else {
+  if(!emailExists(req.body['user_id'])){
+
     res.status(403).send('Email does not exist!');
+
+  } else if(!req.body['password'] === users[emailExists(req.body['user_id'])]['password']) {
+
+    res.status(403).send('Invalid password');
+
+  } else {
+
+    res.cookie('user_id', emailExists(req.body['user_id']));
+    console.log(req.cookies);
+    res.redirect('/');
   }
 
 });
+
+
 /////////////////////////////////// REGISTER \\\\\\\\\\\\\\\\\\\\\\\\
+
+
 app.get("/register", (req, res) => {
   res.render('urls_register');
 });
@@ -142,7 +161,6 @@ app.post("/register", (req, res) => {
       password
     };
     res.cookie('email', email);
-    res.cookie('password', password);
     res.cookie('user_id', userID);
     console.log(email, password, users);
     res.redirect('/urls');
@@ -168,7 +186,7 @@ app.get("/urls/:id", (req, res) => {
   if(!shortURL){
     res.status(404).send("URL does not exist!");
   }
-  if(!req.cookies['username']) {
+  if(!req.cookies['user_id']) {
     res.status(401).send("Please login"); //need to add login link
   } else { // still need to add logged in user doesnt own url
     res.render("urls_show", templateVars);
