@@ -115,17 +115,19 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  var emailReg = req.body['email'];
-  var pwdReg = req.body['password'];
-  res.cookie('email', emailReg);
-  res.cookie('password', pwdReg);
+  var email = req.body['email'];
+  var password = req.body['password'];
   var userID = generateRandomString();
   users[userID] = {
-      id: userID,
-      email: emailReg,
-      password: pwdReg
-  }
-  console.log(emailReg, pwdReg, users);
+    id: userID,
+    email,
+    password
+  };
+  res.cookie('email', email);
+  res.cookie('password', password);
+  res.cookie('user_id', userID);
+  console.log(email, password, users);
+  res.redirect('/urls');
 });
 
 /////////////////////////////////// LOGOUT \\\\\\\\\\\\\\\\\\\\\\\\
