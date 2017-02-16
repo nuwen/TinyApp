@@ -13,6 +13,12 @@ app.use(express.static(__dirname + '/public'));
 
 app.use(cookieParser());
 
+app.use(function(req, res, next){
+  res.locals.username = req.cookies['username'];
+
+  next();
+});
+
 app.set('view engine', 'ejs');
 
 var urlDatabase = {
@@ -20,12 +26,35 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  },
+  "abc123": {
+    id: "abc123",
+    email: "mail@mail.com",
+    password: "pass123"
+  }
+};
+
+
+
+
+
+
 // ROOT
 
 app.get('/', (req, res) => {
   // render `home.ejs` with the list of posts
-  res.send('hello')
-})
+  res.send('hello');
+});
 
 
 app.listen(PORT, () => {
@@ -42,11 +71,10 @@ app.get("/hello", (req, res) => {
 
 app.get("/urls", (req, res) => {
   if(false) { // change back to "!req.cookies["username"]"
-    res.status(401).send('Unauthorized');;
+    res.status(401).send('Unauthorized');
   } else {
     let templateVars = {
-      urls: urlDatabase,
-      username: req.cookies["username"]
+      urls: urlDatabase
     };
     res.render("urls_index", templateVars);
   }
@@ -54,8 +82,7 @@ app.get("/urls", (req, res) => {
 
 app.get("/new", (req, res) => {
   let templateVars = {
-    urls: urlDatabase,
-    username: req.cookies["username"]
+    urls: urlDatabase
   };
   res.render("urls_new", templateVars);
 
@@ -69,6 +96,9 @@ app.post("/urls/", (req, res) => { //still need to generate shorturl wit user lo
   urlDatabase[shortURL] = updateURL.longURL;
 });
 
+/////////////////////////////////// LOGIN \\\\\\\\\\\\\\\\\\\\\\\\
+
+
 app.post("/login", (req, res) => {
   var usernameINPUT = req.body['username'];
   res.cookie('username', usernameINPUT);
@@ -79,6 +109,27 @@ app.post("/login", (req, res) => {
     //html with input fields for email and password
   }
 });
+/////////////////////////////////// REGISTER \\\\\\\\\\\\\\\\\\\\\\\\
+app.get("/register", (req, res) => {
+  res.render('register');
+});
+
+app.post("/register", (req, res) => {
+  var emailReg = req.body['email'];
+  var pwdReg = req.body['password'];
+  res.cookie('email', emailReg);
+  res.cookie('password', pwdReg);
+  var userID = generateRandomString();
+  users[userID] = {
+      id: userID,
+      email: emailReg,
+      password: pwdReg
+  }
+  console.log(emailReg, pwdReg, users);
+});
+
+/////////////////////////////////// LOGOUT \\\\\\\\\\\\\\\\\\\\\\\\
+
 
 app.post("/logout", (req, res) => {
   res.clearCookie('username');
@@ -90,8 +141,7 @@ app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   let templateVars = {
     shortURL,
-    longURL: urlDatabase[shortURL],
-    username: req.cookies["username"]
+    longURL: urlDatabase[shortURL]
   };
 
   if(!shortURL){
