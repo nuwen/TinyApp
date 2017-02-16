@@ -98,6 +98,11 @@ app.post("/urls/", (req, res) => { //still need to generate shorturl wit user lo
 
 /////////////////////////////////// LOGIN \\\\\\\\\\\\\\\\\\\\\\\\
 
+app.get("/login", (req, res) => {
+  console.log("login page");
+  res.render('urls_login');
+
+})
 
 app.post("/login", (req, res) => {
   var usernameINPUT = req.body['username'];
@@ -111,23 +116,32 @@ app.post("/login", (req, res) => {
 });
 /////////////////////////////////// REGISTER \\\\\\\\\\\\\\\\\\\\\\\\
 app.get("/register", (req, res) => {
-  res.render('register');
+  res.render('urls_register');
 });
 
 app.post("/register", (req, res) => {
   var email = req.body['email'];
   var password = req.body['password'];
   var userID = generateRandomString();
-  users[userID] = {
-    id: userID,
-    email,
-    password
-  };
-  res.cookie('email', email);
-  res.cookie('password', password);
-  res.cookie('user_id', userID);
-  console.log(email, password, users);
-  res.redirect('/urls');
+
+  if(!email || !password) {
+    res.status(400).send("Invalid input!");
+  } else if (emailExists(email)) {
+
+    res.status(400).send("E-mail already exists!");
+
+  } else {
+    users[userID] = {
+      id: userID,
+      email,
+      password
+    };
+    res.cookie('email', email);
+    res.cookie('password', password);
+    res.cookie('user_id', userID);
+    console.log(email, password, users);
+    res.redirect('/urls');
+  }
 });
 
 /////////////////////////////////// LOGOUT \\\\\\\\\\\\\\\\\\\\\\\\
@@ -185,4 +199,13 @@ function generateRandomString() {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
 
   return text;
+}
+
+function emailExists(emailReg){
+  for(userid in users) {
+    if(users[userid]['email'] === emailReg){
+      return true;
+    }
+  }
+  return false;
 }

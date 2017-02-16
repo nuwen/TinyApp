@@ -35,13 +35,15 @@
         </div>
         </form>
         <% } else { %>
-        <div class="input-group">
-        <form method="POST" action="/login" class="form-inline">
-          <label for="username">Enter Username: </label>
-          <input type="text" name="username" style="width: 300px">
-          <input type="submit" value="Sign In" class="btn btn-danger">
-        </div>
+          <div class="input-group">
+            <form method="GET" action="/login">
+            <button>Login</button>
+          </form>
+
+          <form method="GET" action="/register">
+          <button>Register</button>
         </form>
+
         <% } %>
 
 

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registration Landing</title>
+</head>
+<body>
+  <% include partials/_header %>
+
+  <h1>Enter information to register</h1>
+
+<form method="POST" action="/register">
+
+  <div class="input-group">
+    <table>
+    <tr>
+      <td>
+        <label for="emal">E-mail: </label>
+      </td>
+      <td>
+        <input type="email" value="" name="email" style="width: 300px">
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label for="password">Password: </label>
+      </td>
+      <td>
+        <input type="password" value="" name="password" style="width: 300px">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <center><input type="submit" value="Register" class="btn btn-danger"></center>
+      </td>
+    </tr>
+  </table>
+    </div>
+</form>
+</body>
+</html>
