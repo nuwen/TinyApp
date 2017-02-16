@@ -20,6 +20,7 @@ app.use(function(req, res, next){
   res.locals.user_id = req.cookies['user_id'];
   res.locals.users = users;
   res.locals.user_email = req.body['user_id'];
+  res.locals.urls = urlDatabase;
 
   next();
 });
@@ -29,8 +30,16 @@ app.set('view engine', 'ejs');
 
 
 var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    url: "http://www.lighthouselabs.ca",
+    userID: "abc123",
+    count: 0
+  },
+  "9sm5xK": {
+    url: "http://www.google.com",
+    userID: "abc123",
+    count: 0
+  }
 };
 
 const users = {
@@ -77,21 +86,28 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  if(false) { // change back to "!req.cookies["user_id"]"
+
+  if(!req.cookies["user_id"]) {
     res.status(401).send('Unauthorized');
   } else {
-    let templateVars = {
-      urls: urlDatabase
-    };
-    res.render("urls_index", templateVars);
+
+    for(var smallURL in urlDatabase) {
+  var urlCreator = Object.values(urlDatabase[smallURL]['userID']).join('');
+  if(user_id === urlCreator) {
+    console.log(`${smallURL} -------> ${urlDatabase[smallURL]['url']}`);
+  }
+}
+
+    console.log(req.cookies['user_id']);
+
+
+    res.render("urls_index");
   }
 });
 
 app.get("/new", (req, res) => {
-  let templateVars = {
-    urls: urlDatabase
-  };
-  res.render("urls_new", templateVars);
+
+  res.render("urls_new");
 
 });
 
@@ -113,24 +129,26 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
 
-  res.cookie('user_id', req.body['user_id']);
+
 
   if(!req.body['user_id']) {
     res.send('invalid user id');
   }
-  if(!emailExists(req.body['user_id'])){
-
-    res.status(403).send('Email does not exist!');
-
-  } else if(!req.body['password'] === users[emailExists(req.body['user_id'])]['password']) {
-
-    res.status(403).send('Invalid password');
-
-  } else {
+  if(emailExists(req.body['user_id'])){
 
     res.cookie('user_id', emailExists(req.body['user_id']));
     console.log(req.cookies);
-    res.redirect('/');
+
+  } else {
+    res.status(403).send('Email does not exist!');
+  }
+  if(req.body['password'] === users[emailExists(req.body['user_id'])]['password']) {
+
+    res.redirect('/urls');
+
+  } else {
+
+    res.status(403).send('Invalid password');
   }
 
 });
@@ -180,7 +198,7 @@ app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   let templateVars = {
     shortURL,
-    longURL: urlDatabase[shortURL]
+    longURL: urlDatabase[shortURL]['url']
   };
 
   if(!shortURL){

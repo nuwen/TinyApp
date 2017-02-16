@@ -19,7 +19,7 @@
   <% for(let shortURL in urls) { %>
   <tr>
     <td class="cellpadding">
-      <%= `${shortURL} ----> ${urls[shortURL]} \n `%>
+      <%= `${shortURL} ----> ${urls[shortURL]['url']} \n `%>
     </td>
     <td class="cellpadding">
       <form action="/urls/<%= shortURL %>">
