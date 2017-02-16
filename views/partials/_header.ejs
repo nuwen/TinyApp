@@ -19,7 +19,8 @@
   .jumbotron {
     background-color: #f4511e; /* Orange */
     color: #000000;
-}
+  }
+
 </style>
 
 <body>
@@ -29,7 +30,7 @@
         <% if(username) { %>
         <form method="POST" action="/logout"class="form-inline">
         <div class="input-group">
-            <label for="logout"><%=`${username} `%> </label>
+            <label for="logout" style="color: #FFFFFF"><%=`${username} `%> </label>
             <input type="submit" value="Logout">
         </div>
         </form>

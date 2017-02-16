@@ -21,11 +21,12 @@ var urlDatabase = {
 };
 
 // ROOT
-app.get("/", (req, res) => {
-  res.end('Hello');
-  console.log(req.cookies["username"]); // debugging line removel8rs
 
-});
+app.get('/', (req, res) => {
+  // render `home.ejs` with the list of posts
+  res.send('hello')
+})
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -40,22 +41,27 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  if(false) { // change back to "!req.cookies["username"]"
+    res.status(401).send('Unauthorized');;
+  } else {
+    let templateVars = {
+      urls: urlDatabase,
+      username: req.cookies["username"]
+    };
+    res.render("urls_index", templateVars);
+  }
+});
+
+app.get("/new", (req, res) => {
   let templateVars = {
     urls: urlDatabase,
     username: req.cookies["username"]
   };
-  res.render("urls_index", templateVars);
+  res.render("urls_new", templateVars);
 
 });
 
-app.get("/urls/new", (req, res) => {
-  let templateVars = {
-    username: req.cookies["username"]
-  };
-  res.render("urls_new");
-});
-
-app.post("/urls/", (req, res) => {
+app.post("/urls/", (req, res) => { //still need to generate shorturl wit user logged in
   const updateURL = req.body;
   const shortURL = (req.headers.referer.slice(27));
   console.log(req.body);  // debug statement to see POST parameters
@@ -66,14 +72,18 @@ app.post("/urls/", (req, res) => {
 app.post("/login", (req, res) => {
   var usernameINPUT = req.body['username'];
   res.cookie('username', usernameINPUT);
-  // res.send(req.body['username']);
-  res.redirect('/');
+  res.cookie('session', '1', {expires: 0});
+  if(req.body['username']) {
+    res.redirect('/urls');
+  } else {
+    //html with input fields for email and password
+  }
 });
 
 app.post("/logout", (req, res) => {
   res.clearCookie('username');
   console.log('deleted');
-  res.redirect('/');
+  res.redirect('/urls');
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -83,10 +93,28 @@ app.get("/urls/:id", (req, res) => {
     longURL: urlDatabase[shortURL],
     username: req.cookies["username"]
   };
-  res.render("urls_show", templateVars);
+
+  if(!shortURL){
+    res.status(404).send("URL does not exist!");
+  }
+  if(!req.cookies['username']) {
+    res.status(401).send("Please login"); //need to add login link
+  } else { // still need to add logged in user doesnt own url
+    res.render("urls_show", templateVars);
+  }
 });
 
 app.get("/u/:shortURLS", (req, res) => {
+  let longURL = "http://www.lighthouselabs.ca";
+  res.redirect(longURL);
+});
+
+app.get("/u/:id", (req, res) => {
+  if(req.params.id){
+    res.redirect(urlDatabase[req.params.id]);
+  } else {
+    res.status(404).send("Short URL doesn't exist");
+  }
   let longURL = "http://www.lighthouselabs.ca";
   res.redirect(longURL);
 });
@@ -98,5 +126,11 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 function generateRandomString() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+  for(var i = 0; i < 5; i++ )
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
 }
