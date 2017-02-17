@@ -131,7 +131,9 @@ app.post("/urls", (req, res) => { //still need to generate shorturl wit user log
 /////////////////////////////////// LOGIN \\\\\\\\\\\\\\\\\\\\\\\\ TASK 6
 
 app.get("/login", (req, res) => {
-  console.log("login page");
+  if(req.session.user_id) {
+    res.redirect('/');
+  }
   res.render('urls_login');
 
 });
@@ -139,7 +141,7 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
 
   if(!req.body['user_id']) {
-    res.send('invalid user id');
+    res.send('Invalid user id');
   }
   if(emailExists(req.body.user_id)){
 
@@ -162,6 +164,9 @@ app.post("/login", (req, res) => {
 
 
 app.get("/register", (req, res) => {
+  if(req.session.user_id){
+    res.redirect('/');
+  }
   res.render('urls_register');
 });
 
@@ -171,14 +176,15 @@ app.post("/register", (req, res) => {
   var password = bcrypt.hashSync(req.body['password'], 10);
   var userID = generateRandomString();
 
-console.log(password);
   if(!email || !password) {
     res.status(400).send("Invalid input!");
+
   } else if (emailExists(email)) {
 
     res.status(400).send("E-mail already exists!");
 
   } else {
+
     users[userID] = {
       id: userID,
       email,
@@ -227,7 +233,6 @@ app.post("/urls/:id", (req, res) => {
     res.status(401).send("Please login <a href='/login'>Click Here</a>");
   }
   if(req.session.user_id !== urlDatabase[req.params.id].userID){
-    console.log("test::::::::::::::::::::::", urlDatabase[req.params.id].userID);
     res.status(403).send("Error 403, Unauthorized access.");
   }
   const updateURL = req.body;

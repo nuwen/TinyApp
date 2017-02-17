@@ -28,25 +28,47 @@
 <center>
 
         <% if(user_id) { %>
-        <form method="POST" action="/logout"class="form-inline">
-        <div class="input-group">
-            <label for="logout" style="color: #000000">
-                    <%= `Hello ${email}!` %>
-            </label>
-            <input type="submit" value="Logout">
-        </div>
-        </form>
-        <% } else { %>
-          
+          <table>
+          <tr>
+          <td>
+            <%= `Hello ${email}!` %>
+          </td>
+          <td>
+          <form method="POST" action="/logout"class="form-inline">
           <div class="input-group">
-            <form method="GET" action="/login">
-            <button>Login</button>
+            <input type="submit" value="Logout">
           </form>
+          </td>
+          <td>
+          <form method="GET" action="/urls">
+            <button>My URLS</button>
+          </form>
+          </td>
+          </div>
+        </tr>
+        </table>
 
-          <form method="GET" action="/register">
-          <button>Register</button>
-        </form>
+        <% } else { %>
+          <table>
+            <tr>
+              <td>
+                <div class="input-group">
+                  <form method="GET" action="/login">
+                    <button>Login</button>
+                  </form>
+              </td>
+              <td>
+                  <form method="GET" action="/register">
+                    <button>Register</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          </table>
+
         <% } %>
+
+
 
 <% console.log(':::::::::END OF HEADER:::::::'); %>
 
