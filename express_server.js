@@ -46,7 +46,7 @@ var urlDatabase = {
   },
   "9sm5xK": {
     url: "http://www.google.com",
-    userID: "user2RandomID",
+    userID: "abc123",
     count: 0
   }
 };
@@ -77,7 +77,7 @@ const users = {
 // ROOT
 
 app.get('/', (req, res) => {
-  res.send('hello');
+  res.redirect("/login");
 });
 
 
@@ -98,7 +98,7 @@ app.get("/urls", (req, res) => {
   if(!req.session.user_id) {
     res.status(401).send('Unauthorized');
   } else {
-
+    console.log(req.session.user_id);
     let templateVars = {userUrls: (urlsForUser(req.session.user_id))}
 
     res.render("urls_index", templateVars);
@@ -128,7 +128,7 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log(req.body);
+
   if(!req.body['user_id']) {
     res.send('invalid user id');
   }
@@ -136,13 +136,11 @@ app.post("/login", (req, res) => {
 
     req.session.user_id = emailExists(req.body.user_id);
 
-    console.log('user_id::::::::::afteremailcheck: ', req.session.user_id);
   } else {
     res.status(403).send('Email does not exist!');
   }
   if(bcrypt.compare(req.body['password'], users[emailExists(req.body['user_id'])]['password'])) {
-    console.log('user_id::::::::::afterpwcheck: ', req.session.user_id);
-    res.redirect('/');
+    res.redirect('/urls');
 
   } else {
     res.status(403).send('Invalid password');
@@ -160,9 +158,11 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   var email = req.body['email'];
-  var password = bcrypt.hash(req.body['password'], 10);
+
+  var password = bcrypt.hashSync(req.body['password'], 10);
   var userID = generateRandomString();
 
+console.log(password);
   if(!email || !password) {
     res.status(400).send("Invalid input!");
   } else if (emailExists(email)) {
@@ -189,7 +189,7 @@ app.post("/logout", (req, res) => {
 
   req.session = null;
   console.log('loggedout');
-  res.redirect('/urls');
+  res.redirect('/login');
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -203,10 +203,11 @@ app.get("/urls/:id", (req, res) => {
     res.status(404).send("URL does not exist!");
   }
   if(!req.session.user_id) {
-    res.status(401).send("Please login"); //need to add login link
-  } else { // still need to add logged in user doesnt own url
-    res.render("urls_show", templateVars);
+    res.status(401).send("Please login <a href='/login'>Click Here</a>");
+  } else if (req.session.user_id !=== urlDatabase[shortURL]['userID']) { // still need to add logged in user doesnt own url
+    res.status(403).send("Invalid Permissions!");
   }
+  res.render("urls_show", templateVars);
 });
 
 app.get("/u/:shortURLS", (req, res) => {
@@ -217,6 +218,10 @@ app.get("/u/:shortURLS", (req, res) => {
 app.get("/u/:id", (req, res) => {
   if(req.params.id){
     let longURL = urlDatabase[req.params.id]['url'];
+
+    urlDatabase[req.params.id].count += 1;
+    console.log('tesssssssssssssssst', urlDatabase[req.params.id].count);
+
     res.redirect(longURL);
   } else {
     res.status(404).send("Short URL doesn't exist");

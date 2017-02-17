@@ -16,21 +16,43 @@
 
   <div class="row">
   <table>
+  <tr>
+    <td>Short URL</td>
+    <td></td>
+    <td>Long URL</td>
+    <td>Count</td>
+    <td></td>
+  </td>
   <% for(let i = 0; i < userUrls.length; i++) { %>
   <tr>
+
     <td class="cellpadding">
-      <%= `${userUrls[i]} ----> ${urls[userUrls[i]]['url']} \n `%>
+      <%= `${userUrls[i]}` %>
     </td>
+
+    <td class="cellpadding">
+      --->
+    </td>
+
+    <td>
+      <%= `${urls[userUrls[i]]['url']}`%>
+    </td>
+
+    <td>
+      <%= `${urls[userUrls[i]]['count']}`%>
+    </td
     <td class="cellpadding">
       <form action="/urls/<%= userUrls[i] %>">
         <input type="submit" value="Update"/>
       </form>
     </td>
+
     <td class="cellpadding">
       <form method="POST" action="/urls/<%= userUrls[i] %>/delete">
       <button>Delete</button>
     </form>
     </td>
+
   </tr>
   <% } %>
 
