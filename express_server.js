@@ -211,18 +211,23 @@ app.get("/u/:shortURLS", (req, res) => {
 
 app.get("/u/:id", (req, res) => {
   if(req.params.id){
-    res.redirect(urlDatabase[req.params.id]);
+    let longURL = urlDatabase[req.params.id]['url'];
+    res.redirect(longURL);
   } else {
     res.status(404).send("Short URL doesn't exist");
   }
-  let longURL = "http://www.lighthouselabs.ca";
-  res.redirect(longURL);
 });
 
 
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id];
-  res.redirect("/urls");
+
+  if(req.cookies['user_id'] === urlDatabase[req.params.id]['userID']){
+    delete urlDatabase[req.params.id];
+    res.redirect("/urls");
+  }
+
+  res.status(403).send('No Permission!');
+
 });
 
 function generateRandomString() {

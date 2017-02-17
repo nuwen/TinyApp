@@ -28,6 +28,7 @@
 <center>
 
         <% if(user_id) { %>
+          <%console.log(user_id)%>
         <form method="POST" action="/logout"class="form-inline">
         <div class="input-group">
             <label for="logout" style="color: #000000"><%=`${users[user_id]['email']} `%> </label>
