@@ -4,7 +4,7 @@
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var app = express();
-
+var bcrypt = require('bcrypt');
 var PORT = process.env.PORT || 8080;
 
 const bodyParser = require("body-parser");
@@ -17,7 +17,7 @@ app.use(cookieParser());
 
 
 app.use(function(req, res, next){
-  res.locals.user_id = req.cookies['user_id'];
+  res.locals.user_id = req.session.user_id;
   res.locals.users = users;
   res.locals.user_email = req.body['user_id'];
   res.locals.urls = urlDatabase;
@@ -85,14 +85,14 @@ app.get("/hello", (req, res) => {
 
 app.get("/urls", (req, res) => {
 
-  if(!req.cookies["user_id"]) {
+  if(!req.session.user_id) {
     res.status(401).send('Unauthorized');
   } else {
 
 
 
     console.log(req.cookies['user_id']);     ///////////////////////////////////////////////////////////////////////
-    let templateVars = {userUrls: (urlsForUser(req.cookies['user_id']))}
+    let templateVars = {userUrls: (urlsForUser(req.session.user_id))}
 
     res.render("urls_index", templateVars);
   }
@@ -129,16 +129,18 @@ app.post("/login", (req, res) => {
   }
   if(emailExists(req.body['user_id'])){
 
-    res.cookie('user_id', emailExists(req.body['user_id']));
+    req.session.user_id = emailExists(req.body['user_id']);
     console.log(req.cookies);
 
   } else {
     res.status(403).send('Email does not exist!');
   }
-  if(req.body['password'] === users[emailExists(req.body['user_id'])]['password']) {
+  if(bcrypt.compare(req.body['password'], users[emailExists(req.body['user_id'])]['password'])) {
 
+    req.session.user_id = req.body['user_id'];
+    res.redirect('/');
+    return;
 
-    res.redirect('/urls');
 
   } else {
     res.status(403).send('Invalid password');
@@ -156,7 +158,7 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   var email = req.body['email'];
-  var password = req.body['password'];
+  var password = bcrypt.hash(req.body['password'], 10);
   var userID = generateRandomString();
 
   if(!email || !password) {
@@ -171,8 +173,8 @@ app.post("/register", (req, res) => {
       email,
       password
     };
-    res.cookie('email', email);
-    res.cookie('user_id', userID);
+    req.session.email = email;
+    req.session.user_id = userID;
     console.log(email, password, users);
     res.redirect('/urls');
   }
@@ -197,7 +199,7 @@ app.get("/urls/:id", (req, res) => {
   if(!shortURL){
     res.status(404).send("URL does not exist!");
   }
-  if(!req.cookies['user_id']) {
+  if(!req.session.user_id) {
     res.status(401).send("Please login"); //need to add login link
   } else { // still need to add logged in user doesnt own url
     res.render("urls_show", templateVars);
@@ -221,7 +223,7 @@ app.get("/u/:id", (req, res) => {
 
 app.post("/urls/:id/delete", (req, res) => {
 
-  if(req.cookies['user_id'] === urlDatabase[req.params.id]['userID']){
+  if(req.session.user_id === urlDatabase[req.params.id]['userID']){
     delete urlDatabase[req.params.id];
     res.redirect("/urls");
   }
