@@ -27,8 +27,6 @@ app.use(function(req, res, next){
 
 app.set('view engine', 'ejs');
 
-
-
 var urlDatabase = {
   "b2xVn2": {
     url: "http://www.lighthouselabs.ca",
@@ -37,7 +35,7 @@ var urlDatabase = {
   },
   "9sm5xK": {
     url: "http://www.google.com",
-    userID: "abc123",
+    userID: "user2RandomID",
     count: 0
   }
 };
@@ -91,17 +89,12 @@ app.get("/urls", (req, res) => {
     res.status(401).send('Unauthorized');
   } else {
 
-    for(var smallURL in urlDatabase) {
-  var urlCreator = Object.values(urlDatabase[smallURL]['userID']).join('');
-  if(user_id === urlCreator) {
-    console.log(`${smallURL} -------> ${urlDatabase[smallURL]['url']}`);
-  }
-}
-
-    console.log(req.cookies['user_id']);
 
 
-    res.render("urls_index");
+    console.log(req.cookies['user_id']);     ///////////////////////////////////////////////////////////////////////
+    let templateVars = {userUrls: (urlsForUser(req.cookies['user_id']))}
+
+    res.render("urls_index", templateVars);
   }
 });
 
@@ -125,7 +118,7 @@ app.get("/login", (req, res) => {
   console.log("login page");
   res.render('urls_login');
 
-})
+});
 
 app.post("/login", (req, res) => {
 
@@ -144,10 +137,10 @@ app.post("/login", (req, res) => {
   }
   if(req.body['password'] === users[emailExists(req.body['user_id'])]['password']) {
 
+
     res.redirect('/urls');
 
   } else {
-
     res.status(403).send('Invalid password');
   }
 
@@ -249,4 +242,20 @@ function emailExists(emailReg){
     }
   }
   return false;
+}
+
+function urlsForUser(id) {
+  var idArr = [];
+
+  for(let url in urlDatabase) {
+    var shortURL = urlDatabase[url];
+    console.log(url);
+
+    for(let userID in shortURL){
+      if(id === shortURL[userID]) {
+        idArr.push(url);
+      }
+    }
+  }
+  return idArr;
 }
