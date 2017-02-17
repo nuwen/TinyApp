@@ -111,12 +111,21 @@ app.get("/new", (req, res) => {
 
 });
 
-app.post("/urls/", (req, res) => { //still need to generate shorturl wit user logged in
-  const updateURL = req.body;
-  const shortURL = (req.headers.referer.slice(27));
-  console.log(req.body);  // debug statement to see POST parameters
-  res.send(updateURL['longURL']);         // Respond with 'Ok' (we will replace this)
-  urlDatabase[shortURL] = updateURL.longURL;
+// if user is logged in:
+// generates a shortURL, saves the link and associates it with the user
+// redirect -> /urls/:id
+// if user is not logged in:
+// returns a 401 response, HTML with a relevant error message and a link to /login
+
+app.post("/urls", (req, res) => { //still need to generate shorturl wit user logged in
+  let newShortURL = generateRandomString();
+  urlDatabase[newShortURL] = {
+    url: req.body.newURL,
+    userID: req.session.user_id,
+    count: 0
+  }
+  res.redirect(`/urls/${newShortURL}`);
+  console.log(req.body.newURL, newShortURL, urlDatabase[newShortURL]);
 });
 
 /////////////////////////////////// LOGIN \\\\\\\\\\\\\\\\\\\\\\\\ TASK 6
@@ -208,6 +217,23 @@ app.get("/urls/:id", (req, res) => {
     res.status(403).send("Invalid Permissions!");
   }
   res.render("urls_show", templateVars);
+});
+
+app.post("/urls/:id", (req, res) => {
+  if(!req.params.id) {
+    res.status(404).send("URL does not exist!");
+  }
+  if(!req.session.user_id) {
+    res.status(401).send("Please login <a href='/login'>Click Here</a>");
+  }
+  if(req.session.user_id !== urlDatabase[req.params.id].userID){
+    console.log("test::::::::::::::::::::::", urlDatabase[req.params.id].userID);
+    res.status(403).send("Error 403, Unauthorized access.");
+  }
+  const updateURL = req.body;
+  const shortURL = (req.params.id);
+
+  urlDatabase[shortURL] = updateURL.longURL;
 });
 
 app.get("/u/:shortURLS", (req, res) => {
