@@ -28,14 +28,16 @@
 <center>
 
         <% if(user_id) { %>
-          <%console.log(user_id)%>
         <form method="POST" action="/logout"class="form-inline">
         <div class="input-group">
-            <label for="logout" style="color: #000000"><%=`${users[user_id]['email']} `%> </label>
+            <label for="logout" style="color: #000000">
+                    <%= `Hello ${email}!` %>
+            </label>
             <input type="submit" value="Logout">
         </div>
         </form>
         <% } else { %>
+          
           <div class="input-group">
             <form method="GET" action="/login">
             <button>Login</button>
@@ -44,9 +46,9 @@
           <form method="GET" action="/register">
           <button>Register</button>
         </form>
-
         <% } %>
 
+<% console.log(':::::::::END OF HEADER:::::::'); %>
 
 
 </body>

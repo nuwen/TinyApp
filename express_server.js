@@ -1,3 +1,4 @@
+
 // listen to port 8080
 // need http
 
@@ -11,17 +12,27 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + '/public'));
 
-app.use(cookieParser());
+var cookieSession = require('cookie-session')
+
+
+app.use(cookieSession({
+  name: 'session',
+  keys: [process.env.SESSION_SECRET || 'development']
+}));
+
+
 
 
 
 
 app.use(function(req, res, next){
   res.locals.user_id = req.session.user_id;
+  res.locals.email = req.session.user_id;
   res.locals.users = users;
-  res.locals.user_email = req.body['user_id'];
   res.locals.urls = urlDatabase;
-
+  console.log("RES LOCS: ", res.locals);
+  console.log("BODY: ", req.body);
+  console.log("========END OF app.use========");
   next();
 });
 
@@ -66,7 +77,6 @@ const users = {
 // ROOT
 
 app.get('/', (req, res) => {
-  // render `home.ejs` with the list of posts
   res.send('hello');
 });
 
@@ -89,9 +99,6 @@ app.get("/urls", (req, res) => {
     res.status(401).send('Unauthorized');
   } else {
 
-
-
-    console.log(req.cookies['user_id']);     ///////////////////////////////////////////////////////////////////////
     let templateVars = {userUrls: (urlsForUser(req.session.user_id))}
 
     res.render("urls_index", templateVars);
@@ -121,26 +128,21 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-
-
-
+  console.log(req.body);
   if(!req.body['user_id']) {
     res.send('invalid user id');
   }
-  if(emailExists(req.body['user_id'])){
+  if(emailExists(req.body.user_id)){
 
-    req.session.user_id = emailExists(req.body['user_id']);
-    console.log(req.cookies);
+    req.session.user_id = emailExists(req.body.user_id);
 
+    console.log('user_id::::::::::afteremailcheck: ', req.session.user_id);
   } else {
     res.status(403).send('Email does not exist!');
   }
   if(bcrypt.compare(req.body['password'], users[emailExists(req.body['user_id'])]['password'])) {
-
-    req.session.user_id = req.body['user_id'];
+    console.log('user_id::::::::::afterpwcheck: ', req.session.user_id);
     res.redirect('/');
-    return;
-
 
   } else {
     res.status(403).send('Invalid password');
@@ -184,7 +186,8 @@ app.post("/register", (req, res) => {
 
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('user_id');
+
+  req.session = null;
   console.log('loggedout');
   res.redirect('/urls');
 });
