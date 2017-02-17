@@ -204,7 +204,7 @@ app.get("/urls/:id", (req, res) => {
   }
   if(!req.session.user_id) {
     res.status(401).send("Please login <a href='/login'>Click Here</a>");
-  } else if (req.session.user_id !=== urlDatabase[shortURL]['userID']) { // still need to add logged in user doesnt own url
+  } else if (req.session.user_id !== urlDatabase[shortURL]['userID']) {
     res.status(403).send("Invalid Permissions!");
   }
   res.render("urls_show", templateVars);

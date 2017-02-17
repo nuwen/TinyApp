@@ -40,7 +40,7 @@
 
     <td>
       <%= `${urls[userUrls[i]]['count']}`%>
-    </td
+    </td>
     <td class="cellpadding">
       <form action="/urls/<%= userUrls[i] %>">
         <input type="submit" value="Update"/>
@@ -57,7 +57,17 @@
   <% } %>
 
   </table>
-  </div
+</div>
+
+<div>
+  <td>
+    <form action="/urls" method="POST" style="margin:10px;">
+
+    <input type="text" name="newURL" value="Enter a URL" style="width: 300px">
+    <input type="submit" value="Submit">
+    </form>
+  </td>
+</div>
 
 </body>
 </html>
