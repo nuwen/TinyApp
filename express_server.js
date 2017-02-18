@@ -16,10 +16,7 @@ var cookieSession = require('cookie-session');
 
 app.use(cookieSession({
   name: 'session',
-  keys: [process.env.WHITE_CHOCOLATE_MACADAMIA_NUTS || 'development'],
-  genid: function(req) {
-    return genuuid();
-  }
+  keys: [process.env.WHITE_CHOCOLATE_MACADAMIA_NUTS || 'development']
 }));
 
 app.set('view engine', 'ejs');
@@ -282,7 +279,7 @@ app.post("/urls/:id", (req, res) => {
 app.get("/u/:id", (req, res) => {
   if(req.params.id){
     let longURL = urlDatabase[req.params.id]['url'];
-    
+
 
     var views = urlDatabase[req.params.id]['allCount'];
     views++;
