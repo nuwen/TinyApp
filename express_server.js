@@ -102,17 +102,6 @@ function urlsForUser(id) {
   return idArr;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 // ROOT
 
 app.get('/', (req, res) => {
@@ -261,6 +250,8 @@ app.get("/urls/:id", (req, res) => {
   }
   res.render("urls_show", templateVars);
 });
+
+//////////////////////// Update URL
 
 app.post("/urls/:id", (req, res) => {
   if(!req.params.id) {

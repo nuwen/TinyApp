@@ -14,17 +14,14 @@
       <td>
 
         <form action="/urls/<%=`${shortURL}`%>" method="POST" style="margin:10px;">
-        <input id="longURL" type="text" name="longURL" value="<%=`${longURL}`%>" style="width: 300px">
-        <input type="submit" class="btn btn-danger" value="Update">
+          <input id="longURL" type="text" name="longURL" value="<%=`${longURL}`%>" style="width: 300px">
+          <input type="submit" class="btn btn-danger" value="Update">
         </form>
-
-
       </td>
       <td>
-
-
-      
-
+        <form action="/urls/<%= `${shortURL}`%>/delete" method="POST" style="margin:0px;">
+          <input type="submit" class="btn btn-danger" value="Delete">
+        </form>
       </td>
     </tr>
   </table>
