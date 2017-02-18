@@ -12,42 +12,29 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + '/public'));
 
-var cookieSession = require('cookie-session')
-
+var cookieSession = require('cookie-session');
 
 app.use(cookieSession({
   name: 'session',
-  keys: [process.env.SESSION_SECRET || 'development']
+  keys: [process.env.WHITE_CHOCOLATE_MACADAMIA_NUTS || 'development']
 }));
-
-
-
-
-
-
-app.use(function(req, res, next){
-  res.locals.user_id = req.session.user_id;
-  res.locals.email = req.session.user_id;
-  res.locals.users = users;
-  res.locals.urls = urlDatabase;
-  console.log("RES LOCS: ", res.locals);
-  console.log("BODY: ", req.body);
-  console.log("========END OF app.use========");
-  next();
-});
 
 app.set('view engine', 'ejs');
 
-var urlDatabase = {
+////////////////////////////// "Database"
+
+let urlDatabase = {
   "b2xVn2": {
     url: "http://www.lighthouselabs.ca",
     userID: "abc123",
-    count: 0
+    allCount: 0,
+    uniqueCount: 0
   },
   "9sm5xK": {
     url: "http://www.google.com",
     userID: "abc123",
-    count: 0
+    allCount: 0,
+    uniqueCount: 0
   }
 };
 
@@ -68,6 +55,58 @@ const users = {
     password: "pass123"
   }
 };
+
+// Middleware
+
+app.use(function(req, res, next){
+  res.locals.user_id = req.session.user_id;
+  res.locals.email = req.session.user_id;
+  res.locals.users = users;
+  res.locals.urls = urlDatabase;
+  next();
+});
+
+/////////////////// Functions \\\\\\\\\\\\\\\\\\\\\\\\\\
+
+function generateRandomString() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for(var i = 0; i < 5; i++ ) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
+
+function emailExists(emailReg){
+  for(userid in users) {
+    if(users[userid]['email'] === emailReg){
+      return userid;
+    }
+  }
+  return false;
+}
+
+function urlsForUser(id) {
+  var idArr = [];
+
+  for(let url in urlDatabase) {
+    var shortURL = urlDatabase[url];
+
+    for(let userID in shortURL){
+      if(id === shortURL[userID]) {
+        idArr.push(url);
+      }
+    }
+  }
+  return idArr;
+}
+
+
+
+
+
+
 
 
 
@@ -93,14 +132,15 @@ app.get("/hello", (req, res) => {
   res.end("<html><body>Hello <b>World! TESTSES</b></body></html>\n");
 });
 
-app.get("/urls", (req, res) => {
+// Access /urls
 
+app.get("/urls", (req, res) => {
   if(!req.session.user_id) {
     res.status(401).send('Unauthorized');
   } else {
-    console.log(req.session.user_id);
-    let templateVars = {userUrls: (urlsForUser(req.session.user_id))}
 
+    let templateVars = {userUrls: (urlsForUser(req.session.user_id))};
+    console.log(urlDatabase);
     res.render("urls_index", templateVars);
   }
 });
@@ -111,46 +151,47 @@ app.get("/new", (req, res) => {
 
 });
 
-// if user is logged in:
-// generates a shortURL, saves the link and associates it with the user
-// redirect -> /urls/:id
-// if user is not logged in:
-// returns a 401 response, HTML with a relevant error message and a link to /login
+// Create new URL Handler
 
-app.post("/urls", (req, res) => { //still need to generate shorturl wit user logged in
-  let newShortURL = generateRandomString();
-  urlDatabase[newShortURL] = {
-    url: req.body.newURL,
-    userID: req.session.user_id,
-    count: 0
+app.post("/urls", (req, res) => {
+  if(req.session.user_id){
+    let newShortURL = generateRandomString();
+    urlDatabase[newShortURL] = {
+      url: req.body.newURL,
+      userID: req.session.user_id,
+      allCount: 0,
+      uniqueCount: 0
+    };
+    res.redirect(`/urls/${newShortURL}`);
+  } else {
+    res.status(401).send("Please login <a href='/login'>Click Here</a>");
   }
-  res.redirect(`/urls/${newShortURL}`);
-  console.log(req.body.newURL, newShortURL, urlDatabase[newShortURL]);
 });
 
 /////////////////////////////////// LOGIN \\\\\\\\\\\\\\\\\\\\\\\\ TASK 6
 
 app.get("/login", (req, res) => {
   if(req.session.user_id) {
-    res.redirect('/');
+    res.redirect('/urls');
+  } else {
+    res.render('urls_login');
   }
-  res.render('urls_login');
-
 });
 
 app.post("/login", (req, res) => {
 
   if(!req.body['user_id']) {
-    res.send('Invalid user id');
+    res.send('invalid user id');
   }
-  if(emailExists(req.body.user_id)){
 
+  if(emailExists(req.body.user_id)) {
     req.session.user_id = emailExists(req.body.user_id);
-
   } else {
-    res.status(403).send('Email does not exist!');
+  res.status(403).send('Email does not exist!');
   }
+
   if(bcrypt.compare(req.body['password'], users[emailExists(req.body['user_id'])]['password'])) {
+
     res.redirect('/urls');
 
   } else {
@@ -165,7 +206,7 @@ app.post("/login", (req, res) => {
 
 app.get("/register", (req, res) => {
   if(req.session.user_id){
-    res.redirect('/');
+    res.redirect('/')
   }
   res.render('urls_register');
 });
@@ -178,13 +219,11 @@ app.post("/register", (req, res) => {
 
   if(!email || !password) {
     res.status(400).send("Invalid input!");
-
   } else if (emailExists(email)) {
 
     res.status(400).send("E-mail already exists!");
 
   } else {
-
     users[userID] = {
       id: userID,
       email,
@@ -192,7 +231,6 @@ app.post("/register", (req, res) => {
     };
     req.session.email = email;
     req.session.user_id = userID;
-    console.log(email, password, users);
     res.redirect('/urls');
   }
 });
@@ -203,10 +241,9 @@ app.post("/register", (req, res) => {
 app.post("/logout", (req, res) => {
 
   req.session = null;
-  console.log('loggedout');
   res.redirect('/login');
 });
-
+/////////// UPDATE URL
 app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   let templateVars = {
@@ -235,29 +272,33 @@ app.post("/urls/:id", (req, res) => {
   if(req.session.user_id !== urlDatabase[req.params.id].userID){
     res.status(403).send("Error 403, Unauthorized access.");
   }
-  const updateURL = req.body;
-  const shortURL = (req.params.id);
 
-  urlDatabase[shortURL] = updateURL.longURL;
+  let updateURL = req.body;
+  let shortURL = req.params.id;
+  console.log('POSTLINK:::::::::', urlDatabase[shortURL]);
+  urlDatabase[shortURL].url = updateURL.longURL;
+
+  console.log(urlDatabase);
 });
 
-app.get("/u/:shortURLS", (req, res) => {
-  let longURL = "http://www.lighthouselabs.ca";
-  res.redirect(longURL);
-});
 
 app.get("/u/:id", (req, res) => {
   if(req.params.id){
     let longURL = urlDatabase[req.params.id]['url'];
 
+    var views = urlDatabase[req.params.id]['allCount'];
+    views++;
+    urlDatabase[req.params.id]['allCount'] = views;
+
+
     urlDatabase[req.params.id].count += 1;
-    console.log('tesssssssssssssssst', urlDatabase[req.params.id].count);
 
     res.redirect(longURL);
   } else {
     res.status(404).send("Short URL doesn't exist");
   }
 });
+
 
 
 app.post("/urls/:id/delete", (req, res) => {
@@ -270,38 +311,3 @@ app.post("/urls/:id/delete", (req, res) => {
   res.status(403).send('No Permission!');
 
 });
-
-function generateRandomString() {
-  var text = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-  for(var i = 0; i < 5; i++ )
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-  return text;
-}
-
-function emailExists(emailReg){
-  for(userid in users) {
-    if(users[userid]['email'] === emailReg){
-      return userid;
-    }
-  }
-  return false;
-}
-
-function urlsForUser(id) {
-  var idArr = [];
-
-  for(let url in urlDatabase) {
-    var shortURL = urlDatabase[url];
-    console.log(url);
-
-    for(let userID in shortURL){
-      if(id === shortURL[userID]) {
-        idArr.push(url);
-      }
-    }
-  }
-  return idArr;
-}
