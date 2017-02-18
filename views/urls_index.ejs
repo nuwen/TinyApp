@@ -8,11 +8,21 @@
 </head>
 
 <style>
+
+
 .jumbotron {
 background-color: #f4511e;
 color: #fff;
 padding: 100px 25px;
 }
+
+a:link {text-decoration: bold}
+
+a:visited {text-decoration: none}
+
+a:hover {text-decoration: none}
+
+a:active {text-decoration: none}
 </style>
 
 
@@ -30,6 +40,8 @@ padding: 100px 25px;
     <td></td>
     <td>Long URL</td>
     <td>Count</td>
+    <td>Unique Count</td>
+    <td>Date Created</td>
     <td></td>
     </h4>
   </tr>
@@ -37,7 +49,6 @@ padding: 100px 25px;
   <tr>
 
     <td class="cellpadding" style="width: 100px">
-
       <%=`${userUrls[i]}` %>
     </td>
 
@@ -46,14 +57,32 @@ padding: 100px 25px;
     </td>
 
     <td class="cellpadding" style="width: 300px">
-      <%= `${urls[userUrls[i]]['url']}`%>
+      <a href="<%`${urls[userUrls[i]]['url']}`%>">
+        <b>
+          <%= `${urls[userUrls[i]]['url']}`%>
+        </b>
+      </a>
     </td>
 
-    <td>
+    <td class="cellpadding" style="width: 50px">
       <center>
-      <%= `${urls[userUrls[i]]['allCount']}`%>
+        <%= `${urls[userUrls[i]]['allCount']}`%>
       <center>
     </td>
+
+    <td class="cellpadding">
+      <center>
+        <%= `${urls[userUrls[i]]['uniqueCount']}`%>
+      <center>
+    </td>
+
+    <td class="cellpadding">
+      <center>
+        <%= `${urls[userUrls[i]]['timeStamp']}`%>
+      <center>
+    </td>
+
+
     <td class="cellpadding">
       <form action="/urls/<%= userUrls[i] %>" style="margin:10px;">
         <button class="btn btn-danger">Update</button>

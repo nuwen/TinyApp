@@ -11,12 +11,15 @@ var PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + '/public'));
-
+app.use(cookieParser());
 var cookieSession = require('cookie-session');
 
 app.use(cookieSession({
   name: 'session',
-  keys: [process.env.WHITE_CHOCOLATE_MACADAMIA_NUTS || 'development']
+  keys: [process.env.WHITE_CHOCOLATE_MACADAMIA_NUTS || 'development'],
+  genid: function(req) {
+    return genuuid();
+  }
 }));
 
 app.set('view engine', 'ejs');
@@ -28,13 +31,15 @@ let urlDatabase = {
     url: "http://www.lighthouselabs.ca",
     userID: "abc123",
     allCount: 0,
-    uniqueCount: 0
+    uniqueCount: 0,
+    timeStamp: 0
   },
   "9sm5xK": {
     url: "http://www.google.com",
     userID: "abc123",
     allCount: 0,
-    uniqueCount: 0
+    uniqueCount: 0,
+    timeStamp: 0
   }
 };
 
@@ -149,7 +154,8 @@ app.post("/urls", (req, res) => {
       url: req.body.newURL,
       userID: req.session.user_id,
       allCount: 0,
-      uniqueCount: 0
+      uniqueCount: 0,
+      timeStamp: new Date()
     };
     res.redirect(`/urls/${newShortURL}`);
   } else {
@@ -276,13 +282,14 @@ app.post("/urls/:id", (req, res) => {
 app.get("/u/:id", (req, res) => {
   if(req.params.id){
     let longURL = urlDatabase[req.params.id]['url'];
+    
 
     var views = urlDatabase[req.params.id]['allCount'];
     views++;
     urlDatabase[req.params.id]['allCount'] = views;
-
-
     urlDatabase[req.params.id].count += 1;
+
+    console.log('REQID >>>>>>>>>>>>>>>>>', req.session.sessionid);
 
     res.redirect(longURL);
   } else {
