@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <title>urls show</title>
+    <title>urls show</title>
 </head>
+
 <body>
-  <% include partials/_header %>
+    <% include partials/_header %>
 
-  <table>
-    <tr>
-      <td>
-        <h1>ShortURL: <%= `${shortURL}`%></h1>
-      </td>
-      <td>
+        <table>
+            <tr>
+                <td>
+                    <h1>ShortURL: <%= `${shortURL}`%></h1>
+                </td>
+                <td>
 
-        <form action="/urls/<%=`${shortURL}`%>" method="POST" style="margin:10px;">
-          <input id="longURL" type="text" name="longURL" value="<%=`${longURL}`%>" style="width: 300px">
-          <input type="submit" class="btn btn-danger" value="Update">
-        </form>
-      </td>
-      <td>
-        <form action="/urls/<%= `${shortURL}`%>/delete" method="POST" style="margin:0px;">
-          <input type="submit" class="btn btn-danger" value="Delete">
-        </form>
-      </td>
-    </tr>
-  </table>
+                    <form action="/urls/<%=`${shortURL}`%>" method="POST" style="margin:10px;">
+                        <input id="longURL" type="text" name="longURL" value="<%=`${longURL}`%>" style="width: 300px">
+                        <input type="submit" class="btn btn-danger" value="Update">
+                    </form>
+                </td>
+                <td>
+                    <form action="/urls/<%= `${shortURL}`%>/delete" method="POST" style="margin:0px;">
+                        <input type="submit" class="btn btn-danger" value="Delete">
+                    </form>
+                </td>
+            </tr>
+        </table>
 
 </body>
+
 </html>

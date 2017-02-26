@@ -1,41 +1,61 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Login Landing</title>
+    <title>Login Landing</title>
 </head>
 
+<title>TinyApp</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+
+</head>
+
+<style>
+    .jumbotron {
+        background-color: #f4511e;
+        color: #fff;
+        padding: 100px 25px;
+    }
+</style>
+
+
 <body>
-  <% include partials/_header %>
+    <% include partials/_header %>
 
-<h1>Enter information to login</h1>
-<form method="POST" action="/login">
+        <h1>Enter information to login</h1>
+        <form method="POST" action="/login">
 
-  <div class="input-group">
-    <table>
-    <tr>
-      <td>
-        <label for="email">E-mail: </label>
-      </td>
-      <td>
-        <input type="email" value="" name="user_id" style="width: 300px">
-      </td>
-    </tr>
+            <div class="input-group  text-center">
+                <table>
+                    <tr>
+                        <td>
+                            <label for="email">E-mail: </label>
+                        </td>
+                        <td>
+                            <input type="email" value="" name="userEmail" style="width: 300px">
+                        </td>
+                    </tr>
 
-    <tr>
-      <td>
-        <label for="password">Password: </label>
-      </td>
-      <td>
-        <input type="password" value="" name="password" style="width: 300px">
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <center><input type="submit" value="login" class="btn btn-danger"></center>
-      </td>
-    </tr>
-  </table>
-    </div>
-</form>
+                    <tr>
+                        <td>
+                            <label for="password">Password: </label>
+                        </td>
+                        <td>
+                            <input type="password" value="" name="password" style="width: 300px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <center><input type="submit" value="login" class="btn btn-danger"></center>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
 </body>
+
 </html>

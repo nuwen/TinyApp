@@ -1,77 +1,80 @@
+<!DOCTYPE html>
 <html>
+
 <head>
-  <title>this is the _header.ejs</title>
+    <title>this is the _header.ejs</title>
 </head>
 
 <style>
-  body {
-      font-family:sans-serif;
-      margin: 0 auto;
-      padding-top: 100px;
-      padding-bottom: 20px;
-      background-color: #eeeeee;
+    body {
+        font-family: sans-serif;
+        margin: 0 auto;
+        padding-top: 100px;
+        padding-bottom: 20px;
+        background-color: #eeeeee;
+    }
 
-  }
-  table {
-      margin: auto;
-  }
+    table {
+        margin: auto;
+    }
 
-  .jumbotron {
-    background-color: #f4511e; /* Orange */
-    color: #000000;
-  }
-
+    .jumbotron {
+        background-color: #f4511e;
+        /* Orange */
+        color: #000000;
+    }
 </style>
 
 <body>
 
-<center>
+    <center>
 
         <% if(user_id) { %>
-          <table>
-          <tr>
-          <td>
-            <%= `Hello ${email}!` %>
-          </td>
-          <td>
-          <form method="POST" action="/logout"class="form-inline">
-          <div class="input-group">
-            <input type="submit" value="Logout">
-          </form>
-          </td>
-          <td>
-          <form method="GET" action="/urls">
-            <button>My URLS</button>
-          </form>
-          </td>
-          </div>
-        </tr>
-        </table>
+            <table>
+                <tr>
+                    <td>
+                        <%= `Hello ${email}!` %>
+                    </td>
+                    <td>
+                        <form method="POST" action="/logout" class="form-inline">
+                            <div class="input-group">
+                                <input type="submit" value="Logout">
+                        </form>
+                    </td>
+                    <td>
+                        <form method="GET" action="/urls">
+                            <button>My URLS</button>
+                        </form>
+                    </td>
+                    </div>
+                </tr>
+            </table>
 
-        <% } else { %>
-          <table>
-            <tr>
-              <td>
-                <div class="input-group">
-                  <form method="GET" action="/login">
-                    <button>Login</button>
-                  </form>
-              </td>
-              <td>
-                  <form method="GET" action="/register">
-                    <button>Register</button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          </table>
+            <% } else { %>
+                <table>
+                    <tr>
+                        <td>
+                            <div class="input-group">
+                                <form method="GET" action="/login">
+                                    <button>Login</button>
+                                </form>
+                        </td>
+                        <td>
+                            <form method="GET" action="/register">
+                                <button>Register</button>
+                            </form>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
 
-        <% } %>
+                <% } %>
 
 
 
-<% console.log(':::::::::END OF HEADER:::::::'); %>
+                    <% console.log(':::::::::END OF HEADER:::::::'); %>
 
 
 </body>
- </html>
+
+</html>

@@ -1,115 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <title>TinyApp</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>TinyApp</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <style>
+    .jumbotron {
+        background-color: #f4511e;
+        color: #fff;
+        padding: 100px 25px;
+    }
 
+    a:link {
+        text-decoration: bold
+    }
 
-.jumbotron {
-background-color: #f4511e;
-color: #fff;
-padding: 100px 25px;
-}
+    a:visited {
+        text-decoration: none
+    }
 
-a:link {text-decoration: bold}
+    a:hover {
+        text-decoration: none
+    }
 
-a:visited {text-decoration: none}
-
-a:hover {text-decoration: none}
-
-a:active {text-decoration: none}
+    a:active {
+        text-decoration: none
+    }
 </style>
 
 
 <body>
-  <% include partials/_header %>
+    <% include partials/_header %>
 
 
 
 
-  <div class="row">
-  <table>
-  <tr>
+        <div class="row">
+            <table>
+                <tr>
 
-    <td>Short URL</td>
-    <td></td>
-    <td>Long URL</td>
-    <td>Count</td>
-    <td>Unique Count</td>
-    <td>Date Created</td>
-    <td></td>
-    </h4>
-  </tr>
-  <% for(let i = 0; i < userUrls.length; i++) { %>
-  <tr>
+                    <td style=" width: auto">Short URL</td>
+                    <td style=" width: auto"></td>
+                    <td style=" width: auto">Long URL</td>
+                    <td style=" width: auto">Count</td>
+                    <!-- <td style=" width: auto">Unique Count</td> -->
+                    <td style=" width: auto">Date Created</td>
+                    <td></td>
+                    </h4>
+                </tr>
+                <% for(let i = 0; i < userUrls.length; i++) { %>
+                    <tr>
 
-    <td class="cellpadding" style="width: 100px">
-      <%=`${userUrls[i]}` %>
-    </td>
+                        <td class="cellpadding" style="width: 100px"><%=`${userUrls[i]}` %></td>
 
-    <td class="cellpadding"style="width: 50px">
-      --->
-    </td>
+                        <td class="cellpadding" style="width: 50px">---></td>
 
-    <td class="cellpadding" style="width: 300px">
-      <a href="<%`${urls[userUrls[i]]['url']}`%>">
-        <b>
+                        <td class="cellpadding" style="width: 300px">
+                            <a href="<%`${urls[userUrls[i]]['url']}`%>">
+                                <b>
           <%= `${urls[userUrls[i]]['url']}`%>
         </b>
-      </a>
-    </td>
+                            </a>
+                        </td>
 
-    <td class="cellpadding" style="width: 50px">
-      <center>
-        <%= `${urls[userUrls[i]]['allCount']}`%>
-      <center>
-    </td>
+                        <td class="cellpadding" style="width: 50px">
+                            <center>
+                                <%= `${urls[userUrls[i]]['allCount']}`%>
+                            </center>
+                        </td>
 
-    <td class="cellpadding">
-      <center>
-        <%= `${urls[userUrls[i]]['uniqueCount']}`%>
-      <center>
-    </td>
+                        <!-- <td class="cellpadding">
+                            <center>
+                                <%= `${urls[userUrls[i]]['uniqueCount']}`%>
+                            </center>
+                        </td> -->
 
-    <td class="cellpadding">
-      <center>
-        <%= `${urls[userUrls[i]]['timeStamp']}`%>
-      <center>
-    </td>
+                        <td class="cellpadding">
+                            <center>
+                                <%= `${urls[userUrls[i]]['timeStamp']}`%>
+                            </center>
+                        </td>
 
 
-    <td class="cellpadding">
-      <form action="/urls/<%= userUrls[i] %>" style="margin:10px;">
-        <button class="btn btn-danger">Update</button>
-      </form>
-    </td>
+                        <td class="cellpadding">
+                            <form action="/urls/<%= userUrls[i] %>" style="margin:10px;">
+                                <button class="btn btn-danger">Update</button>
+                            </form>
+                        </td>
 
-    <td class="cellpadding">
-      <form method="POST" action="/urls/<%= userUrls[i] %>/delete">
-      <button class="btn btn-danger">Delete</button>
-    </form>
-    </td>
+                        <td class="cellpadding">
+                            <form method="POST" action="/urls/<%= userUrls[i] %>/delete">
+                                <button class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
 
-  </tr>
-  <% } %>
+                    </tr>
+                    <% } %>
 
-  </table>
-</div>
+            </table>
+        </div>
 
-<div>
-  <td>
-    <form action="/urls" method="POST" style="margin:10px;">
+        <div>
+            <td>
+                <form action="/urls" method="POST" style="margin:10px;">
 
-    <input type="text" name="newURL" value="Enter a URL" style="width: 300px">
-    <input type="submit" class="btn btn-danger" value="Create">
-    </form>
-  </td>
-</div>
+                    <input type="text" name="newURL" placeholder="Enter a URL" style="width: 300px">
+                    <input type="submit" class="btn btn-danger" value="Create">
+                </form>
+            </td>
+        </div>
 
 </body>
+
 </html>

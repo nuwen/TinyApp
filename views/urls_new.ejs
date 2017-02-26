@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <title>urls show</title>
+    <title>urls show</title>
 </head>
+
 <body>
-  <% include partials/_header %>
+    <% include partials/_header %>
+
+        <div class="jumbotron text-center">
+            <h1>ShortURL: <%= `${shortURL}`%></h1>
 
 
-    <h1>ShortURL: <%= `${shortURL}`%></h1>
-
-
-    <form action="/urls" method="POST" style="margin:150px;">
-      <label for="longURL"></label>
-      <input id="longURL" type="text" name="longURL" value="<%=`${longURL}`%>" style="width: 300px">
-      <input type="submit" value="Update">
-    </form>
-
+            <form action="/urls" method="POST" style="margin:150px;">
+                <label for="longURL"></label>
+                <input id="longURL" type="text" name="longURL" value="<%=`${longURL}`%>" style="width: 300px">
+                <input type="submit" value="Update">
+            </form>
+        </div>
 
 
 </body>
+
 </html>
