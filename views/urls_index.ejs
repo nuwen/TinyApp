@@ -5,29 +5,7 @@
     <title>TinyApp</title>
 </head>
 
-<style>
-    .jumbotron {
-        background-color: #f4511e;
-        color: #fff;
-        padding: 100px 25px;
-    }
 
-    a:link {
-        text-decoration: bold
-    }
-
-    a:visited {
-        text-decoration: none
-    }
-
-    a:hover {
-        text-decoration: none
-    }
-
-    a:active {
-        text-decoration: none
-    }
-</style>
 
 
 <body>
@@ -52,21 +30,23 @@
                 <% for(let i = 0; i < userUrls.length; i++) { %>
                     <tr>
 
-                        <td class="cellpadding" style="width: 100px"><%=`${userUrls[i]}` %></td>
+                        <td class="cellpadding" style="width: 100px">
+                            <%=`${userUrls[i]}` %>
+                        </td>
 
                         <td class="cellpadding" style="width: 50px">---></td>
 
                         <td class="cellpadding" style="width: 300px">
                             <a href="<%`${urls[userUrls[i]]['url']}`%>">
                                 <b>
-          <%= `${urls[userUrls[i]]['url']}`%>
+          <%= `${urls[userUrls[i]].url}`%>
         </b>
                             </a>
                         </td>
 
                         <td class="cellpadding" style="width: 50px">
                             <center>
-                                <%= `${urls[userUrls[i]]['allCount']}`%>
+                                <%= `${urls[userUrls[i]].allCount}`%>
                             </center>
                         </td>
 
@@ -78,7 +58,7 @@
 
                         <td class="cellpadding">
                             <center>
-                                <%= `${urls[userUrls[i]]['timeStamp']}`%>
+                                <%= `${urls[userUrls[i]].timeStamp}`%>
                             </center>
                         </td>
 

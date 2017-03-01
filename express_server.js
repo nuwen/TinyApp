@@ -18,7 +18,6 @@ app.use(cookieSession({
 
 app.set('view engine', 'ejs');
 
-////////////////////////////// "Database"
 
 let urlDatabase = {
   "b2xVn2": {
@@ -53,7 +52,6 @@ const users = {
   }
 };
 
-// Middleware
 
 app.use(function(req, res, next) {
   res.locals.user_id = req.session.user_id;
@@ -63,7 +61,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-/////////////////// Functions \\\\\\\\\\\\\\\\\\\\\\\\\\
 
 function generateRandomString() {
   var text = "";
@@ -77,7 +74,7 @@ function generateRandomString() {
 
 function emailExists(emailReg) {
   for (userid in users) {
-    if (users[userid]['email'] === emailReg) {
+    if (users[userid].email === emailReg) {
       return userid;
     }
   }
@@ -103,6 +100,7 @@ let checkValidURL = (url) => {
     return true;
   }
 };
+
 let includesHTTP = (url) => {
 
   if (url.includes('http://') || url.includes('https://')) {
@@ -113,17 +111,9 @@ let includesHTTP = (url) => {
 
 };
 
-// ROOT
-
 app.get('/', (req, res) => {
   res.redirect("/login");
 });
-
-
-
-
-
-// Access /urls
 
 app.get("/urls", (req, res) => {
   if (!req.session.user_id) {
@@ -142,8 +132,6 @@ app.get("/new", (req, res) => {
   res.render("urls_new");
 
 });
-
-// Create new URL Handler
 
 app.post("/urls", (req, res) => {
   let valid = checkValidURL(req.body.newURL)
@@ -169,8 +157,6 @@ app.post("/urls", (req, res) => {
     res.status(401).send("Please login <a href='/login'>Click Here</a>");
   }
 });
-
-/////////////////////////////////// LOGIN \\\\\\\\\\\\\\\\\\\\\\\\ TASK 6
 
 app.get("/login", (req, res) => {
   if (req.session.user_id) {
@@ -202,9 +188,6 @@ app.post("/login", (req, res) => {
 });
 
 
-/////////////////////////////////// REGISTER \\\\\\\\\\\\\\\\\\\\\\\\
-
-
 app.get("/register", (req, res) => {
   if (req.session.user_id) {
     res.redirect('/');
@@ -213,7 +196,7 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  var email = req.body['email'];
+  var email = req.body.email;
 
   var password = bcrypt.hashSync(req.body.password, 10);
   var userID = generateRandomString();
@@ -236,8 +219,6 @@ app.post("/register", (req, res) => {
   }
 });
 
-/////////////////////////////////// LOGOUT \\\\\\\\\\\\\\\\\\\\\\\\
-
 
 app.post("/logout", (req, res) => {
 
@@ -258,13 +239,12 @@ app.get("/urls/:id", (req, res) => {
   }
   if (!req.session.user_id) {
     res.status(401).send("Please login <a href='/login'>Click Here</a>");
-  } else if (req.session.user_id !== urlDatabase[shortURL]['userID']) {
+  } else if (req.session.user_id !== urlDatabase[shortURL].userID) {
     res.status(403).send("Invalid credentials!<a href='/urls'>Try again!</a>");
   }
   res.render("urls_show", templateVars);
 });
 
-//////////////////////// Update URL
 
 app.post("/urls/:id", (req, res) => {
   if (!req.params.id) {
