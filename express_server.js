@@ -1,7 +1,3 @@
-0
-// listen to port 8080
-// need http
-
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var bcrypt = require('bcrypt');
@@ -17,7 +13,7 @@ var cookieSession = require('cookie-session');
 
 app.use(cookieSession({
   name: 'session',
-  keys: [process.env.WHITE_CHOCOLATE_MACADAMIA_NUTS || 'development']
+  keys: [process.env.SESSION_SECRET || 'development']
 }));
 
 app.set('view engine', 'ejs');
@@ -109,8 +105,7 @@ let checkValidURL = (url) => {
 };
 let includesHTTP = (url) => {
 
-  console.log(url);
-  if (url.includes('http://')) {
+  if (url.includes('http://') || url.includes('https://')) {
     return url;
   } else {
     return ('http://' + url);
@@ -125,9 +120,6 @@ app.get('/', (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
-});
 
 
 
@@ -157,7 +149,7 @@ app.post("/urls", (req, res) => {
   let valid = checkValidURL(req.body.newURL)
   if (valid) {
     console.log(valid);
-    } else {
+  } else {
     res.redirect(`/urls`)
     return;
   }
@@ -258,7 +250,7 @@ app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   let templateVars = {
     shortURL,
-    longURL: urlDatabase[shortURL]['url']
+    longURL: includesHTTP(urlDatabase[shortURL].url)
   };
 
   if (!shortURL) {
@@ -287,10 +279,8 @@ app.post("/urls/:id", (req, res) => {
 
   let updateURL = req.body;
   let shortURL = req.params.id;
-  urlDatabase[shortURL].url = updateURL.longURL;
+  urlDatabase[shortURL].url = includesHTTP(updateURL.longURL);
   res.redirect('/urls');
-
-  console.log(urlDatabase);
 });
 
 
@@ -314,11 +304,15 @@ app.get("/u/:id", (req, res) => {
 
 app.post("/urls/:id/delete", (req, res) => {
 
-  if (req.session.user_id === urlDatabase[req.params.id]['userID']) {
+  if (req.session.user_id === urlDatabase[req.params.id].userID) {
     delete urlDatabase[req.params.id];
     res.redirect("/urls");
   }
 
   res.status(403).send('No Permission! <a href="/urls">Go back!</a>');
 
+});
+
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
 });
