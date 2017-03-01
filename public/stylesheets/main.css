@@ -1,26 +1,27 @@
-        body {
-        font-family: sans-serif;
-        margin: 0 auto;
-        padding-top: 100px;
-        padding-bottom: 20px;
-        background-color: #eeeeee;
-    }
+a:link {
+    text-decoration: bold
+}
 
-    table {
-        margin: auto;
-    }
+a:visited {
+    text-decoration: none
+}
 
-    a:link {
-        text-decoration: bold
-    }
+a:hover {
+    text-decoration: none
+}
 
-    a:visited {
-        text-decoration: none
-    }
+a:active {
+    text-decoration: none
+}
 
-    a:hover {
-        text-decoration: none
-    }
+body {
+    font-family: sans-serif;
+    margin: 0 auto;
+    padding-top: 100px;
+    padding-bottom: 20px;
+    background-color: #eeeeee;
+}
 
-    a:active {
-        text-decoration: none
+table {
+    margin: auto;
+}
